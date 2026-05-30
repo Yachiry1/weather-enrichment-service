@@ -1,0 +1,16 @@
+[project]
+name = "weather-enrichment-backend"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "celery[redis]==5.4.0",
+    "fastapi==0.115.6",
+    "httpx==0.28.1",
+    "psycopg2-binary==2.9.10",
+    "pydantic-settings==2.7.1",
+    "sqlalchemy==2.0.36",
+    "uvicorn[standard]==0.34.0",
+]
+
+[tool.uv]
+package = false

@@ -1,0 +1,49 @@
+<main class="container">
+  <h1>Weather Enrichment Service</h1>
+
+  <button type="button" class="reload-button" (click)="loadCities()">Reload cities</button>
+
+  <form (ngSubmit)="addCity()" class="form">
+    <input
+      name="cityName"
+      [(ngModel)]="cityName"
+      placeholder="Enter city name"
+      [disabled]="saving"
+    >
+
+    <button type="submit" [disabled]="saving || !cityName.trim()">
+      {{ saving ? 'Adding...' : 'Add city' }}
+    </button>
+  </form>
+
+  <p class="error" *ngIf="error">{{ error }}</p>
+  <p *ngIf="loading">Loading...</p>
+
+  <table *ngIf="cities.length > 0">
+    <thead>
+      <tr>
+        <th>City</th>
+        <th>Temperature</th>
+        <th>Humidity</th>
+        <th>Description</th>
+        <th>Status</th>
+        <th></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let city of cities">
+        <td>{{ city.name }}</td>
+        <td>{{ city.temperature === null ? '-' : city.temperature + ' C' }}</td>
+        <td>{{ city.humidity === null ? '-' : city.humidity + '%' }}</td>
+        <td>{{ city.description || '-' }}</td>
+        <td>{{ city.status }}</td>
+        <td>
+          <button type="button" (click)="refreshCity(city)">Refresh</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p *ngIf="!loading && cities.length === 0">No cities yet.</p>
+</main>
