@@ -29,6 +29,11 @@ button:disabled {
   opacity: 0.6;
 }
 
+.delete-button {
+  margin-left: 8px;
+  color: #b00020;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;

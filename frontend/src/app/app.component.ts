@@ -77,6 +77,19 @@ export class AppComponent implements OnInit {
     });
   }
 
+  deleteCity(city: City): void {
+    this.error = '';
+
+    this.cityApi.deleteCity(city.id).subscribe({
+      next: () => {
+        this.loadCities();
+      },
+      error: () => {
+        this.error = `Could not delete ${city.name}`;
+      },
+    });
+  }
+
   private getErrorMessage(error: any): string {
     const detail = error?.error?.detail;
 

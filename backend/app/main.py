@@ -152,6 +152,19 @@ def get_city(city_id: int, db: Session = Depends(get_db)) -> City:
     return city
 
 
+@app.delete("/cities/{city_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_city(city_id: int, db: Session = Depends(get_db)) -> None:
+    city = db.get(City, city_id)
+    if city is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="City not found",
+        )
+
+    db.delete(city)
+    db.commit()
+
+
 @app.post("/cities/{city_id}/refresh", response_model=CityRead, status_code=status.HTTP_202_ACCEPTED)
 def refresh_city(city_id: int, db: Session = Depends(get_db)) -> City:
     city = db.get(City, city_id)
@@ -163,3 +176,4 @@ def refresh_city(city_id: int, db: Session = Depends(get_db)) -> City:
 
     queue_weather_refresh(city, db)
     return city
+

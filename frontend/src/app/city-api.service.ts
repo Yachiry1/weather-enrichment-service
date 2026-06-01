@@ -21,4 +21,8 @@ export class CityApiService {
   refreshCity(cityId: number): Observable<City> {
     return this.http.post<City>(`${this.apiUrl}/cities/${cityId}/refresh`, {});
   }
+
+  deleteCity(cityId: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/cities/${cityId}`);
+  }
 }
