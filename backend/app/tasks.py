@@ -2,6 +2,7 @@ from datetime import UTC, datetime
 
 import httpx
 from celery import Celery
+from sqlalchemy import select
 
 from app.config import get_settings
 from app.database import SessionLocal
@@ -16,6 +17,13 @@ celery_app = Celery(
     backend=settings.redis_url,
     broker_connection_retry_on_startup=True,
 )
+
+celery_app.conf.beat_schedule = {
+    "refresh_all_weather_every_minute": {
+        "task": "app.tasks.refresh_all_weather",
+        "schedule": 60,
+    }
+}
 
 WEATHER_CODE_DESCRIPTIONS = {
     0: "Clear sky",
@@ -38,6 +46,20 @@ WEATHER_CODE_DESCRIPTIONS = {
     82: "Violent rain showers",
     95: "Thunderstorm",
 }
+
+
+@celery_app.task(name="app.tasks.refresh_all_weather")
+def refresh_all_weather() -> int:
+    db = SessionLocal()
+    try:
+        city_ids = list(db.scalars(select(City.id)).all())
+    finally:
+        db.close()
+
+    for city_id in city_ids:
+        refresh_weather.delay(city_id)
+
+    return len(city_ids)
 
 
 @celery_app.task(name="app.tasks.refresh_weather")
